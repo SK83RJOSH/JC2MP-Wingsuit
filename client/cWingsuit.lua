@@ -84,7 +84,7 @@ function Wingsuit:Activate(args)
 				self.subs.wings = Events:Subscribe("GameRender", self, self.DrawWings)
 				self.subs.velocity = Events:Subscribe("Render", self, self.SetVelocity)
 				self.subs.camera = Events:Subscribe("CalcView", self, self.Camera)
-				self.subs.glide = Events:Subscribe("InputPoll", self, self.Glide)
+				self.subs.calcinput = Events:Subscribe("InputPoll", self, self.CalcInput)
 				self.subs.input = Events:Subscribe("LocalPlayerInput", self, self.Input)
 
 			elseif self.superman then
@@ -94,7 +94,7 @@ function Wingsuit:Activate(args)
 				self.speed = self.default_speed
 				-- self.camera = 1
 				self.subs.camera = Events:Subscribe("CalcView", self, self.Camera)
-				self.subs.glide = Events:Subscribe("InputPoll", self, self.Glide)
+				self.subs.calcinput = Events:Subscribe("InputPoll", self, self.CalcInput)
 				self.subs.input = Events:Subscribe("LocalPlayerInput", self, self.Input)
 				self.subs.wings = Events:Subscribe("GameRender", self, self.DrawWings)
 				self.subs.delay = Events:Subscribe("PreTick", function()
@@ -272,7 +272,7 @@ function Wingsuit:SetVelocity()
 
 end
 
-function Wingsuit:Glide()
+function Wingsuit:CalcInput()
 
 	if self.mouse then
 
@@ -416,9 +416,9 @@ function Wingsuit:Abort()
 		Events:Unsubscribe(self.subs.velocity)
 		self.subs.velocity = nil
 	end
-	if self.subs.glide then
-		Events:Unsubscribe(self.subs.glide)
-		self.subs.glide = nil
+	if self.subs.calcinput then
+		Events:Unsubscribe(self.subs.calcinput)
+		self.subs.calcinput = nil
 	end
 	if self.subs.input then
 		Events:Unsubscribe(self.subs.input)
@@ -497,7 +497,7 @@ function Wingsuit:AddHelp()
 	else
 		if self.grapple then
 			text =
-				"The wingsuit allows you to glide gently from the sky." ..
+				"The wingsuit allows you to calcinput gently from the sky." ..
 				"\n\nTo activate, double-tap Shift while sky-diving or parachuting." ..
 				"\nTo de-activate, double-tap Ctrl." ..
 				"\nUse your grapple to propel yourself across land."
