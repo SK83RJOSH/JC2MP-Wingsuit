@@ -94,6 +94,7 @@ function Wingsuit:Activate(args)
 				self.speed = self.default_speed
 				-- self.camera = 1
 				self.subs.camera = Events:Subscribe("CalcView", self, self.Camera)
+				self.subs.glide = Events:Subscribe("InputPoll", self, self.Glide)
 				self.subs.input = Events:Subscribe("LocalPlayerInput", self, self.Input)
 				self.subs.wings = Events:Subscribe("GameRender", self, self.DrawWings)
 				self.subs.delay = Events:Subscribe("PreTick", function()
