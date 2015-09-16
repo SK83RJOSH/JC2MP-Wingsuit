@@ -5,6 +5,7 @@ function Wingsuit:__init()
 	self.superman = false -- Enables superman physics (disables custom grapple)
 	self.grapple = true -- Enables custom grapple while gliding
 	self.rolls = true -- Enables barrel rolls
+	self.mouse = true -- Enables mouse control
 
 	self.default_speed = 51 -- 51 m/s default
 	self.default_vertical_speed = -5 -- -5 m/s default
@@ -22,12 +23,7 @@ function Wingsuit:__init()
 	self.vertical_speed = self.default_vertical_speed
 
 	self.blacklist = {
-		actions = { -- Actions to block while wingsuit is active
-			-- [Action.LookUp] = true,
-			-- [Action.LookDown] = true,
-			-- [Action.LookLeft] = true,
-			-- [Action.LookRight] = true
-		},
+		actions = {}, -- Actions to block while wingsuit is active
 		animations = { -- Disallow activation during these base states
 			[AnimationState.SDead] = true,
 			[AnimationState.SUnfoldParachuteHorizontal] = true,
@@ -35,6 +31,15 @@ function Wingsuit:__init()
 			[AnimationState.SPullOpenParachuteVertical] = true
 		}
 	}
+
+	if not self.mouse then
+
+		self.blacklist.actions[Action.LookUp] = true
+		self.blacklist.actions[Action.LookDown] = true
+		self.blacklist.actions[Action.LookLeft] = true
+		self.blacklist.actions[Action.LookRight] = true
+
+	end
 
 	self.whitelist = { -- Allow instant activation during these base states
 		animations = {
@@ -268,27 +273,31 @@ end
 
 function Wingsuit:Glide()
 
+	if self.mouse then
+
+			if Input:GetValue(Action.MoveLeft) == 0 then
+				Input:SetValue(Action.MoveLeft, (Input:GetValue(Action.LookLeft) / 65536) * 4)
+				Input:SetValue(Action.LookLeft, 0)
+			end
+
+			if Input:GetValue(Action.MoveRight) == 0 then
+				Input:SetValue(Action.MoveRight, (Input:GetValue(Action.LookRight) / 65536) * 4)
+				Input:SetValue(Action.LookRight, 0)
+			end
+
+			if Input:GetValue(Action.MoveBackward) == 0 then
+				Input:SetValue(Action.MoveBackward, (Input:GetValue(Action.LookDown) / 65536) * 4)
+				Input:SetValue(Action.LookDown, 0)
+			end
+
+			if Input:GetValue(Action.MoveForward) == 0 then
+				Input:SetValue(Action.MoveForward, (Input:GetValue(Action.LookUp) / 65536) * 4)
+				Input:SetValue(Action.LookUp, 0)
+			end
+
+	end
+
 	if self.superman then return end
-
-	if Input:GetValue(Action.MoveLeft) == 0 then
-		Input:SetValue(Action.MoveLeft, (Input:GetValue(Action.LookLeft) / 65536) * 4)
-		Input:SetValue(Action.LookLeft, 0)
-	end
-
-	if Input:GetValue(Action.MoveRight) == 0 then
-		Input:SetValue(Action.MoveRight, (Input:GetValue(Action.LookRight) / 65536) * 4)
-		Input:SetValue(Action.LookRight, 0)
-	end
-
-	if Input:GetValue(Action.MoveBackward) == 0 then
-		Input:SetValue(Action.MoveBackward, (Input:GetValue(Action.LookDown) / 65536) * 4)
-		Input:SetValue(Action.LookDown, 0)
-	end
-
-	if Input:GetValue(Action.MoveForward) == 0 then
-		Input:SetValue(Action.MoveForward, (Input:GetValue(Action.LookUp) / 65536) * 4)
-		Input:SetValue(Action.LookUp, 0)
-	end
 
 	if not self.hit then
 
